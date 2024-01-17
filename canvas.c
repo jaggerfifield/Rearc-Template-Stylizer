@@ -10,9 +10,12 @@
 
 #include "line.h"
 #include "keys.h"
+#include "canvas.h"
+#include "menu.h"
 
 #define MAX_POINTS 1920
 
+/*
 typedef struct settings{
 	bool quit;
 	bool draw;
@@ -22,6 +25,7 @@ typedef struct settings{
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 } settings_t;
+*/
 
 void draw(settings_t*);
 void event(settings_t*);
@@ -72,6 +76,8 @@ void draw(settings_t* ps){
 
 	SDL_Point points[MAX_POINTS];
 	SDL_Point center_line[1080];
+
+	menu_t* add_menu = create_menu(0,0,2,"menus/eng/add.m");
 
 	int middle = (int) (1920 / 2);
 
@@ -129,6 +135,9 @@ void draw(settings_t* ps){
 	SDL_RenderDrawPoints(ps->renderer, points, MAX_POINTS);
 	SDL_RenderDrawPoints(ps->renderer, center_line, 1080);
 	SDL_RenderDrawPoints(ps->renderer, prab, 1920);
+
+	SDL_SetRenderDrawColor(ps->renderer, 0, 255, 255, 255);
+	render_menu(ps, add_menu);
 
 	SDL_SetRenderDrawColor(ps->renderer, 0,0,255,255);
 	SDL_RenderDrawPoints(ps->renderer, my_line->points, my_line->size);

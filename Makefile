@@ -5,7 +5,7 @@ ifeq ($(OS), Windows_NT)
 endif
 
 TARGET := rearc
-DEP := main.o canvas.o line.o keys.o
+DEP := main.o canvas.o line.o keys.o menu.o
 FLAGS := -Wall -c -g
 
 all: $(DEP)
@@ -30,6 +30,11 @@ line.o: line.c
 keys.o: keys.c
 	@echo ===== Compile keys.c =====
 	gcc $(LINK) $(FLAGS) keys.c
+	@echo
+
+menu.o: menu.c
+	@echo ===== Compile menu.c =====
+	gcc $(LINK) $(FLAGS) menu.c
 	@echo
 
 clean:

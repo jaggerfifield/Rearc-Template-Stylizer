@@ -1,3 +1,10 @@
 ===== version 0.01
 
 Added a line struct that holds the information about a line. We can render this struct to SDL_Points to be drawn to the screen. 
+
+Added a key input handler, this is a strcut holding what keys are being pressed with bools.
+
+Added a settings struct to hold vales that are referenced across the canvas.c file.
+
+Added menu struct to have ui elements with buttons.
+

@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include "keys.h"
 #include "canvas.h"
 
 bool init(void);
