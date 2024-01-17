@@ -9,40 +9,63 @@
 #include <math.h>
 
 #include "line.h"
+#include "keys.h"
 
 #define MAX_POINTS 1920
 
-void draw(SDL_Window*, bool*);
-void event(SDL_Window*, bool*);
-void update();
+typedef struct settings{
+	bool quit;
+	bool draw;
+
+	keys_t* keys;
+
+	SDL_Window* window;
+	SDL_Renderer* renderer;
+} settings_t;
+
+void draw(settings_t*);
+void event(settings_t*);
+void update(settings_t*);
+void read_keys(settings_t*);
+void handle_keyswap(SDL_Event, settings_t*, bool);
+
+settings_t* init_settings(SDL_Window* window){
+	settings_t* new_settings = (settings_t*)malloc(sizeof(settings_t));
+	
+	new_settings->window = window;
+	new_settings->renderer = SDL_GetRenderer(window);
+	
+	keys_t* key_profile = init_keys();
+	new_settings->keys = key_profile;
+
+	new_settings->quit = false;
+	new_settings->draw = true;
+	return new_settings;
+}
+
+void free_settings(settings_t* settings){
+	free(settings);
+	settings = NULL;
+}
 
 int call_program(SDL_Window* window){
-	bool* p_draw = (bool*) malloc(sizeof(bool));
-	bool* p_quit = (bool*) malloc(sizeof(bool));
-	*p_quit = false;
-	*p_draw = true;
+	settings_t* ps = init_settings(window);
 
-	while(!*p_quit){
-		if(*p_draw)
-			draw(window, p_draw);
-		event(window, p_quit);
-		update();
+	while(!ps->quit){
+		if(ps->draw)
+			draw(ps);
+		event(ps);
+		update(ps);
 	}
 
-	free(p_draw);
-	free(p_quit);
-	p_quit = NULL;
-	p_draw = NULL;
-
+	free_settings(ps);
 	return 0;
 }
 
-void draw(SDL_Window* window, bool* draw){
-	SDL_Renderer* render = SDL_GetRenderer(window);
-	
+void draw(settings_t* ps){
 	int top, left, bottom, right;
 
-	if(SDL_GetWindowBordersSize(window, &top, &left, &bottom, &right) != 0)
+	if(SDL_GetWindowBordersSize(ps->window, &top, &left, &bottom, &right) != 0)
 		SDL_LogError(0, "Border size problem! %s", SDL_GetError());
 
 	SDL_LogInfo(0, "Border is of size (%d, %d, %d, %d)", top, left, bottom, right);
@@ -95,37 +118,37 @@ void draw(SDL_Window* window, bool* draw){
 	c.b = 255;
 	c.a = 255;
 
-	if(SDL_SetRenderDrawColor(render, c.r, c.g, c.b, c.a) != 0){
+	if(SDL_SetRenderDrawColor(ps->renderer, c.r, c.g, c.b, c.a) != 0){
 		SDL_LogError(0, "Could not set draw color. %s", SDL_GetError());
 	}
 
-	SDL_RenderClear(render);
+	SDL_RenderClear(ps->renderer);
 
-	SDL_SetRenderDrawColor(render, 255, 0, 0, 255);
+	SDL_SetRenderDrawColor(ps->renderer, 255, 0, 0, 255);
 
-	SDL_RenderDrawPoints(render, points, MAX_POINTS);
-	SDL_RenderDrawPoints(render, center_line, 1080);
-	SDL_RenderDrawPoints(render, prab, 1920);
+	SDL_RenderDrawPoints(ps->renderer, points, MAX_POINTS);
+	SDL_RenderDrawPoints(ps->renderer, center_line, 1080);
+	SDL_RenderDrawPoints(ps->renderer, prab, 1920);
 
-	SDL_SetRenderDrawColor(render, 0,0,255,255);
-	SDL_RenderDrawPoints(render, my_line->points, my_line->size);
+	SDL_SetRenderDrawColor(ps->renderer, 0,0,255,255);
+	SDL_RenderDrawPoints(ps->renderer, my_line->points, my_line->size);
 
 	free_line(my_line);
 
 	// Push to screen
-	SDL_RenderPresent(render);
+	SDL_RenderPresent(ps->renderer);
 	
-	*draw = false;
+	ps->draw = false;
 }
 
-void event(SDL_Window* window, bool* quit){
+void event(settings_t* ps){
 	SDL_Event e;
 
 	while(SDL_PollEvent(&e) != 0){
 		
 		switch(e.type){
 			case SDL_QUIT:
-				*quit = true;
+				ps->quit = true;
 				break;
 			case 1024:
 				// Mouse move
@@ -133,13 +156,41 @@ void event(SDL_Window* window, bool* quit){
 			case 512:
 				// Active window toggle
 				break;
+			case SDL_KEYDOWN:
+				// Key down
+				handle_keyswap(e, ps, true);
+				break;
+			case SDL_KEYUP:
+				// Key up
+				handle_keyswap(e, ps, false);
 			default:
-				printf("%d\n", e.type);
+				SDL_LogWarn(0,"Unknown event %d\n", e.type);
 				break;
 		}
 	}
 }
 
-void update(){
+void handle_keyswap(SDL_Event e, settings_t* ps, bool swap){
+	switch(e.key.keysym.sym){
+		case SDLK_a:
+			ps->keys->A = swap;
+			break;
+		case SDLK_LSHIFT:
+			ps->keys->SHIFT = swap;
+			break;
+	}
+}
+
+void update(settings_t* ps){
+	read_keys(ps);
 	return;
+}
+
+void read_keys(settings_t* ps){
+	keys_t* profile = ps->keys;
+
+	// TODO can this be done better?
+	if(profile->A && profile->SHIFT){
+		profile->A = false;
+	}
 }
