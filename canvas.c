@@ -8,6 +8,8 @@
 #include <stdbool.h>
 #include <math.h>
 
+#include "line.h"
+
 #define MAX_POINTS 1920
 
 void draw(SDL_Window*, bool*);
@@ -49,6 +51,7 @@ void draw(SDL_Window* window, bool* draw){
 	SDL_Point center_line[1080];
 
 	int middle = (int) (1920 / 2);
+
 	// Build center line
 	for(int i = 0; i < 1080; i++){
 		SDL_Point point;
@@ -80,6 +83,12 @@ void draw(SDL_Window* window, bool* draw){
 		prab[i] = point;
 	}
 
+	line_t* my_line = make_line(100,100,1920);
+	set_a(my_line, 0.2);
+	set_scale(my_line, 0.001);
+
+	render_line(my_line);
+
 	SDL_Color c;
 	c.r = 255;
 	c.g = 255;
@@ -97,6 +106,9 @@ void draw(SDL_Window* window, bool* draw){
 	SDL_RenderDrawPoints(render, points, MAX_POINTS);
 	SDL_RenderDrawPoints(render, center_line, 1080);
 	SDL_RenderDrawPoints(render, prab, 1920);
+
+	SDL_SetRenderDrawColor(render, 0,0,255,255);
+	SDL_RenderDrawPoints(render, my_line->points, my_line->size);
 
 	// Push to screen
 	SDL_RenderPresent(render);

@@ -10,6 +10,7 @@
 #include "canvas.h"
 
 bool init(void);
+int cleanup(int, SDL_Window*, SDL_Renderer*);
 
 int main( void ){
 
@@ -47,17 +48,7 @@ int main( void ){
 
 	SDL_LogInfo(0,"Enter cleanup.");
 	
-	SDL_DestroyWindow(window);
-	SDL_DestroyRenderer(render);
-	
-	window = NULL;
-	render = NULL;
-	
-	SDL_LogInfo(0,"All done, goodbye~");
-	
-	SDL_Quit();
-	
-	return 0;
+	return cleanup(return_val, window, render);
 }
 
 bool init(){
@@ -69,4 +60,18 @@ bool init(){
 	}
 
 	return success;
+}
+
+int cleanup(int err, SDL_Window* window, SDL_Renderer* render){
+	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(render);
+	
+	window = NULL;
+	render = NULL;
+
+	SDL_LogInfo(0,"All done, goodbye~");
+	
+	SDL_Quit();
+
+	return err;
 }
