@@ -65,10 +65,10 @@ void draw_line(line_t* line, SDL_Point* points){
 
 void render_line(line_t* line){
 	for(int i = 0; i < line->size; i++){
-		SDL_Point* point = (SDL_Point*)malloc(sizeof(SDL_Point));
-		point->x = i;
-		point->y = line->scale * (line->a * (i*i) ) + line->b;
-		line->points[i] = *point;
+		SDL_Point point;
+		point.x = i;
+		point.y = line->scale * (line->a * (i*i) ) + line->b;
+		line->points[i] = point;
 	}
 }
 

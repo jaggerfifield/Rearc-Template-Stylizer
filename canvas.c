@@ -110,6 +110,8 @@ void draw(SDL_Window* window, bool* draw){
 	SDL_SetRenderDrawColor(render, 0,0,255,255);
 	SDL_RenderDrawPoints(render, my_line->points, my_line->size);
 
+	free_line(my_line);
+
 	// Push to screen
 	SDL_RenderPresent(render);
 	

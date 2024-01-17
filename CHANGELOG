@@ -1,0 +1,3 @@
+===== version 0.01
+
+Added a line struct that holds the information about a line. We can render this struct to SDL_Points to be drawn to the screen. 
