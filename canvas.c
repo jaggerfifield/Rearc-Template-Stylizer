@@ -1,8 +1,4 @@
-#ifdef Windows_NT
-	#include <SDL.h>
-#else
-	#include <SDL2/SDL.h>
-#endif
+#include <SDL2/SDL.h>
 
 #include <stdio.h>
 #include <stdbool.h>

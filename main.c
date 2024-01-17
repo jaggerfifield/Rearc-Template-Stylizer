@@ -1,8 +1,4 @@
-#ifdef Windows_NT
-	#include <SDL.h>
-#else
-	#include <SDL2/SDL.h>
-#endif
+#include <SDL2/SDL.h>
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -13,7 +9,7 @@
 bool init(void);
 int cleanup(int, SDL_Window*, SDL_Renderer*);
 
-int main( void ){
+int main(int argc, char* argv[]){
 
 	SDL_LogInfo(0,"Let's do this~");
 	SDL_LogInfo(0,"Staritng init stage.");

@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 
+#include "keys.h"
 #include "canvas.h"
 #include "menu.h"
 

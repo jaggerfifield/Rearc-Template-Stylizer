@@ -1,4 +1,4 @@
-#include "keys.h"
+//#include "keys.h"
 
 typedef struct settings{
 	bool quit;
