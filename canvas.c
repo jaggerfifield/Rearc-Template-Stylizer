@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -10,18 +11,6 @@
 #include "menu.h"
 
 #define MAX_POINTS 1920
-
-/*
-typedef struct settings{
-	bool quit;
-	bool draw;
-
-	keys_t* keys;
-
-	SDL_Window* window;
-	SDL_Renderer* renderer;
-} settings_t;
-*/
 
 void draw(settings_t*);
 void event(settings_t*);
@@ -35,6 +24,8 @@ settings_t* init_settings(SDL_Window* window){
 	new_settings->window = window;
 	new_settings->renderer = SDL_GetRenderer(window);
 	
+	new_settings->surface = SDL_GetWindowSurface(window);
+
 	keys_t* key_profile = init_keys();
 	new_settings->keys = key_profile;
 
@@ -73,7 +64,7 @@ void draw(settings_t* ps){
 	SDL_Point points[MAX_POINTS];
 	SDL_Point center_line[1080];
 
-	menu_t* add_menu = create_menu(0,0,2,"menus/eng/add.m");
+	menu_t* add_menu = create_menu(ps,0,0,2, false,"menus/eng/add.m");
 
 	int middle = (int) (1920 / 2);
 
@@ -142,7 +133,7 @@ void draw(settings_t* ps){
 
 	// Push to screen
 	SDL_RenderPresent(ps->renderer);
-	
+
 	ps->draw = false;
 }
 

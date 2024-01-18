@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -54,6 +55,11 @@ bool init(){
 	if(SDL_Init(SDL_INIT_VIDEO) < 0){
 		success = false;
 		SDL_LogError(0,"SDL could not init! %s", SDL_GetError());
+	}
+
+	if(TTF_Init() < 0){
+		success = false;
+		SDL_LogError(0, "TTF could not init! %s", TTF_GetError());
 	}
 
 	return success;

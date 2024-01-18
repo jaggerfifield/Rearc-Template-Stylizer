@@ -8,6 +8,7 @@ typedef struct settings{
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
+	SDL_Surface* surface;
 } settings_t;
 
 int call_program(SDL_Window*);

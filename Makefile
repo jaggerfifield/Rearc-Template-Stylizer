@@ -1,9 +1,9 @@
 LINK := -lSDL2
 
 ifeq ($(OS), Windows_NT)
-	LINK := -lmingw32 -lSDL2main -lSDL2
-	IPATH := -I.\SDL2\include
-	LPATH := -L.\SDL2\lib
+	LINK := -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf
+	IPATH := -I.\SDL2\include -I.\SDL2\include\SDL2 -I.\SDL_ttf\include
+	LPATH := -L.\SDL2\lib -L.\SDL_ttf\lib
 endif
 
 TARGET := rearc
