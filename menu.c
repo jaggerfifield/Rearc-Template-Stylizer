@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
+#include "line.h"
 #include "keys.h"
 #include "canvas.h"
 #include "menu.h"
@@ -64,6 +65,10 @@ menu_t* create_menu(settings_t* ps, int x, int y, int elements, bool horizontal,
 		fgets(new_button.text, MAX_CHAR, file);
 
 		new_button.surface = TTF_RenderText_Solid(new_menu->font, new_button.text, new_button.color);
+
+		if(new_button.surface == NULL)
+			SDL_LogError(0, "TTF error: %s\n", TTF_GetError());
+
 		new_button.texture = SDL_CreateTextureFromSurface(ps->renderer, new_button.surface);
 
 		if(horizontal)

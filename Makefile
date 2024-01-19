@@ -1,4 +1,4 @@
-LINK := -lSDL2
+LINK := -lSDL2 -lSDL2_ttf
 
 ifeq ($(OS), Windows_NT)
 	LINK := -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf

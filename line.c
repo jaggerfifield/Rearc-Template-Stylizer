@@ -26,7 +26,7 @@ line_t* make_line(int x, int y, int size){
 	new_line->y = y;
 
 	new_line->a = 0.0;
-	new_line->b = 50;
+	new_line->b = y;
 	new_line->scale = 1.0;
 
 	new_line->size = size;
@@ -34,7 +34,7 @@ line_t* make_line(int x, int y, int size){
 	SDL_Color col;
 	col.r = 0;
 	col.g = 0;
-	col.b = 255;
+	col.b = 0;
 	col.a = 255;
 
 	new_line->color = col;

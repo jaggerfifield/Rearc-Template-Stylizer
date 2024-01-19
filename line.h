@@ -17,7 +17,6 @@ typedef struct line{
 } line_t;
 
 line_t* make_line(int, int, int);
-void draw_line(line_t*, SDL_Point*);
 void render_line(line_t*);
 
 void set_a(line_t*, float);

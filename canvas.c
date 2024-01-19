@@ -17,6 +17,7 @@ void event(settings_t*);
 void update(settings_t*);
 void read_keys(settings_t*);
 void handle_keyswap(SDL_Event, settings_t*, bool);
+void create_line(settings_t*);
 
 settings_t* init_settings(SDL_Window* window){
 	settings_t* new_settings = (settings_t*)malloc(sizeof(settings_t));
@@ -31,6 +32,16 @@ settings_t* init_settings(SDL_Window* window){
 
 	new_settings->quit = false;
 	new_settings->draw = true;
+
+	line_t* base = make_line(0,0,1920);
+	node_t* lines = malloc(sizeof(node_t));
+	
+	lines->line = base;
+	lines->next = NULL;
+	
+	new_settings->selected = base;
+	new_settings->layer = lines;
+
 	return new_settings;
 }
 
@@ -60,11 +71,11 @@ void draw(settings_t* ps){
 		SDL_LogError(0, "Border size problem! %s", SDL_GetError());
 
 	SDL_LogInfo(0, "Border is of size (%d, %d, %d, %d)", top, left, bottom, right);
-
+/*
+	menu_t* add_menu = create_menu(ps,0,0,2, false,"menus/eng/add.m");
+	
 	SDL_Point points[MAX_POINTS];
 	SDL_Point center_line[1080];
-
-	menu_t* add_menu = create_menu(ps,0,0,2, false,"menus/eng/add.m");
 
 	int middle = (int) (1920 / 2);
 
@@ -98,39 +109,35 @@ void draw(settings_t* ps){
 		point.y = -floor((xp * xp)/1000) + 1080;
 		prab[i] = point;
 	}
+*/
 
-	line_t* my_line = make_line(100,100,1920);
-	set_a(my_line, 0.2);
-	set_scale(my_line, 0.001);
-
-	render_line(my_line);
-
-	SDL_Color c;
-	c.r = 255;
-	c.g = 255;
-	c.b = 255;
-	c.a = 255;
-
-	if(SDL_SetRenderDrawColor(ps->renderer, c.r, c.g, c.b, c.a) != 0){
-		SDL_LogError(0, "Could not set draw color. %s", SDL_GetError());
-	}
+	SDL_SetRenderDrawColor(ps->renderer, 255, 255, 255, 255);
 
 	SDL_RenderClear(ps->renderer);
 
-	SDL_SetRenderDrawColor(ps->renderer, 255, 0, 0, 255);
+	node_t* c = ps->layer;
 
-	SDL_RenderDrawPoints(ps->renderer, points, MAX_POINTS);
-	SDL_RenderDrawPoints(ps->renderer, center_line, 1080);
-	SDL_RenderDrawPoints(ps->renderer, prab, 1920);
+	while(c != NULL){
+		SDL_LogInfo(0,"Drawing a line!");
+		if(SDL_SetRenderDrawColor(ps->renderer, c->line->color.r, c->line->color.g, c->line->color.b, c->line->color.a) != 0){
+			SDL_LogError(0, "Could not set draw color. %s", SDL_GetError());
+		}
+		
+		render_line(c->line);
+		SDL_RenderDrawPoints(ps->renderer, c->line->points, c->line->size);
+		c = c->next;
+	}
 
-	SDL_SetRenderDrawColor(ps->renderer, 0, 255, 255, 255);
-	render_menu(ps, add_menu);
+	SDL_LogInfo(0, "Lines done");
 
-	SDL_SetRenderDrawColor(ps->renderer, 0,0,255,255);
-	SDL_RenderDrawPoints(ps->renderer, my_line->points, my_line->size);
+	//SDL_SetRenderDrawColor(ps->renderer, 255, 0, 0, 255);
+	//SDL_RenderDrawPoints(ps->renderer, points, MAX_POINTS);
+	//SDL_RenderDrawPoints(ps->renderer, center_line, 1080);
+	//SDL_RenderDrawPoints(ps->renderer, prab, 1920);
 
-	free_line(my_line);
-
+	//SDL_SetRenderDrawColor(ps->renderer, 0, 255, 255, 255);
+	//render_menu(ps, add_menu);
+	
 	// Push to screen
 	SDL_RenderPresent(ps->renderer);
 
@@ -171,6 +178,9 @@ void handle_keyswap(SDL_Event e, settings_t* ps, bool swap){
 		case SDLK_a:
 			ps->keys->A = swap;
 			break;
+		case SDLK_l:
+			ps->keys->L = swap;
+			break;
 		case SDLK_LSHIFT:
 			ps->keys->SHIFT = swap;
 			break;
@@ -185,8 +195,37 @@ void update(settings_t* ps){
 void read_keys(settings_t* ps){
 	keys_t* profile = ps->keys;
 
+	if(profile->menu){
+		if(profile->L){
+			SDL_LogInfo(0,"Create new line!");
+			profile->L = false;
+			profile->menu = false;
+			create_line(ps);
+		}
+	}
+
 	// TODO can this be done better?
 	if(profile->A && profile->SHIFT){
+		profile->menu = true;
 		profile->A = false;
 	}
 }
+
+void create_line(settings_t* ps){
+	line_t* new_line = make_line(0,50,1920);
+
+	node_t* next = malloc(sizeof(node_t));
+	next->line = new_line;
+	next->next = NULL;
+
+	ps->selected = new_line;
+	
+	node_t* current = ps->layer;
+
+	while(current->next != NULL)
+		current = current->next;
+
+	current->next = next;
+	ps->draw = true;
+}
+
