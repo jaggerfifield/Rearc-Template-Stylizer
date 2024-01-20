@@ -4,11 +4,16 @@ typedef struct line{
 	int y;
 
 	// a is the coefficient
-	int a;
+	float a;
 	int b;
+	int c;
+
+	float prev_a;
+	int prev_b;
+	int prev_c;
 
 	// scale is a general scaleing factor
-	int scale;
+	float scale;
 
 	int size;
 

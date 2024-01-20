@@ -12,3 +12,5 @@ Menu rendering is using texture copy now.
 
 Now handle adding lines programatically, use SHIFT + A then L to make a new line.
 
+Can bend lines using c, also can translate lines using g.
+

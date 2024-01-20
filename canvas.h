@@ -6,8 +6,20 @@ typedef struct node{
 }node_t;
 
 typedef struct settings{
+	int width;
+	int height;
+
+	int mouse_x;
+	int mouse_y;
+
+	int cap_mouse_x;
+	int cap_mouse_y;
+
 	bool quit;
 	bool draw;
+
+	bool curve_line;
+	bool move_line;
 
 	keys_t* keys;
 
@@ -21,3 +33,4 @@ typedef struct settings{
 
 
 int call_program(SDL_Window*);
+
